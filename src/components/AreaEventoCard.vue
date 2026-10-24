@@ -175,7 +175,7 @@ function confirmarQuitarAsignacion(asig) {
             <div class="flex items-center gap-2 flex-wrap">
               <h3 class="text-base font-bold text-slate-800">{{ area.area_nombre }}</h3>
               <Tag
-                :value="area.tipo_pago === 'por_area' ? 'Bolsa Global Por Área' : 'Pago Individual'"
+                :value="area.tipo_pago === 'por_area' ? 'Por área' : 'Por persona'"
                 :severity="area.tipo_pago === 'por_area' ? 'info' : 'secondary'"
                 class="!text-[11px] !font-semibold"
               />

@@ -173,7 +173,7 @@ async function guardarNuevoEvento(datos) {
               Total acumulado: {{ formatearMoneda(gananciaTotalAcumulada) }}
             </p>
           </div>
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+          <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
             <i class="pi pi-chart-line"></i>
           </div>
         </div>
@@ -184,7 +184,7 @@ async function guardarNuevoEvento(datos) {
         <div class="p-4 border-b border-slate-100 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="pi pi-calendar-clock text-slate-500"></i>
-            <h3 class="text-sm font-bold text-slate-800">Próximos Eventos en Calendario</h3>
+            <h3 class="text-sm font-bold text-slate-800">Próximos eventos</h3>
           </div>
           <router-link
             to="/eventos"
@@ -248,15 +248,7 @@ async function guardarNuevoEvento(datos) {
             </template>
           </Column>
 
-          <Column field="ingreso_pactado" header="Ingreso Pactado">
-            <template #body="{ data }">
-              <span class="font-mono text-xs font-medium text-slate-700">
-                {{ formatearMoneda(data.ingreso_pactado) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column field="ganancia_neta" header="Ganancia Est.">
+          <Column field="ganancia_neta" header="Ganancia">
             <template #body="{ data }">
               <span
                 class="font-mono text-xs font-bold"
@@ -280,48 +272,6 @@ async function guardarNuevoEvento(datos) {
             </template>
           </Column>
         </DataTable>
-      </div>
-
-      <!-- Accesos Rápidos y Ayuda Operativa -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <router-link
-          to="/eventos"
-          class="p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-300 hover:shadow-sm transition-all group flex items-center gap-3.5"
-        >
-          <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-            <i class="pi pi-calendar text-xl"></i>
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-slate-800">Gestionar Eventos</h4>
-            <p class="text-xs text-slate-500">Crear banquetes, editar servicios y ver detalle financiero</p>
-          </div>
-        </router-link>
-
-        <router-link
-          to="/personal"
-          class="p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-300 hover:shadow-sm transition-all group flex items-center gap-3.5"
-        >
-          <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-            <i class="pi pi-users text-xl"></i>
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-slate-800">Directorio de Personal</h4>
-            <p class="text-xs text-slate-500">Altas de meseros, cocineros, tarifas y saldos acumulados</p>
-          </div>
-        </router-link>
-
-        <router-link
-          to="/areas"
-          class="p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-300 hover:shadow-sm transition-all group flex items-center gap-3.5"
-        >
-          <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-            <i class="pi pi-th-large text-xl"></i>
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-slate-800">Catálogo de Áreas</h4>
-            <p class="text-xs text-slate-500">Configuración de departamentos (Cocina, Meseros, Barra)</p>
-          </div>
-        </router-link>
       </div>
     </div>
 

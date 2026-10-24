@@ -371,7 +371,7 @@ async function handleActualizarAsignacion({ id, datos }) {
     toast.add({
       severity: 'success',
       summary: 'Actualizado',
-      detail: 'Horas y pagos recalculados por las vistas SQL.',
+      detail: 'Horas y pagos actualizados.',
       life: 2500,
     })
   } catch (err) {
@@ -736,16 +736,16 @@ function confirmarEliminarCobro(cobro) {
         <Tabs v-model:value="pestanaActiva">
           <TabList class="border-b border-slate-200 px-4 bg-slate-50/60">
             <Tab value="0" class="!text-sm font-semibold !py-3">
-              <i class="pi pi-info-circle mr-2 text-xs"></i>Resumen y Datos
+              <i class="pi pi-info-circle mr-2 text-xs"></i>Resumen
             </Tab>
             <Tab value="1" class="!text-sm font-semibold !py-3">
-              <i class="pi pi-users mr-2 text-xs"></i>Áreas y Personal ({{ areasEvento.length }})
+              <i class="pi pi-users mr-2 text-xs"></i>Áreas y personal ({{ areasEvento.length }})
             </Tab>
             <Tab value="2" class="!text-sm font-semibold !py-3">
-              <i class="pi pi-credit-card mr-2 text-xs"></i>Control de Pagos ({{ listaAsignaciones.length }})
+              <i class="pi pi-credit-card mr-2 text-xs"></i>Pagos ({{ listaAsignaciones.length }})
             </Tab>
             <Tab value="3" class="!text-sm font-semibold !py-3">
-              <i class="pi pi-wallet mr-2 text-xs"></i>Gastos y Cobros
+              <i class="pi pi-wallet mr-2 text-xs"></i>Gastos y cobros
             </Tab>
           </TabList>
 
@@ -813,11 +813,8 @@ function confirmarEliminarCobro(cobro) {
                       Sin observaciones adicionales registradas para este banquete.
                     </p>
 
-                    <div class="pt-3 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-400">
-                      <span>Última sincronización con vistas SQL</span>
-                      <span class="text-emerald-600 font-medium flex items-center gap-1">
-                        <i class="pi pi-check text-[10px]"></i> Al día
-                      </span>
+                    <div class="pt-3 border-t border-slate-200/60 text-[11px] text-slate-400">
+                      <span>Los datos se actualizan automáticamente al guardar cambios.</span>
                     </div>
                   </div>
                 </div>
@@ -829,12 +826,12 @@ function confirmarEliminarCobro(cobro) {
               <div class="space-y-5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                   <div>
-                    <h3 class="text-sm font-bold text-slate-800">Áreas Operativas del Evento</h3>
-                    <p class="text-xs text-slate-500">Configura modalidades (Individual o Por Área) y asigna tu equipo de trabajo</p>
+                    <h3 class="text-sm font-bold text-slate-800">Áreas del evento</h3>
+                    <p class="text-xs text-slate-500">Elige cómo se paga cada área y asigna a tu equipo.</p>
                   </div>
 
                   <Button
-                    label="Activar Área en este Evento"
+                    label="Agregar área"
                     icon="pi pi-plus"
                     size="small"
                     class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 !text-xs font-semibold"
@@ -847,12 +844,12 @@ function confirmarEliminarCobro(cobro) {
                   <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xl mx-auto mb-2 text-slate-400">
                     <i class="pi pi-th-large"></i>
                   </div>
-                  <p class="text-sm font-bold text-slate-700">No hay áreas activadas en este evento todavía</p>
+                  <p class="text-sm font-bold text-slate-700">Este evento todavía no tiene áreas</p>
                   <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
-                    Agrega departamentos como Cocina, Meseros o Barra para comenzar a registrar turnos y salarios.
+                    Agrega un área como Cocina, Meseros o Barra para empezar a asignar personal.
                   </p>
                   <Button
-                    label="Activar Primer Área"
+                    label="Agregar primera área"
                     icon="pi pi-plus"
                     size="small"
                     class="!bg-emerald-600 !border-emerald-600 !text-xs font-semibold"
@@ -882,8 +879,8 @@ function confirmarEliminarCobro(cobro) {
               <div class="space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
                   <div>
-                    <h3 class="text-sm font-bold text-slate-800">Control de Pagos a Personal</h3>
-                    <p class="text-xs text-slate-500">Monitoreo de montos calculados por las vistas SQL, liquidaciones y recibos</p>
+                    <h3 class="text-sm font-bold text-slate-800">Pagos al personal</h3>
+                    <p class="text-xs text-slate-500">Consulta lo que se debe, registra abonos y revisa el historial.</p>
                   </div>
 
                   <div class="flex items-center gap-3">
@@ -1151,7 +1148,7 @@ function confirmarEliminarCobro(cobro) {
     <Dialog
       v-model:visible="dialogActivarArea"
       modal
-      header="Activar Área en este Evento"
+      header="Agregar área al evento"
       :style="{ width: '90vw', maxWidth: '520px' }"
     >
       <div v-if="catalogoAreas.length === 0" class="py-4 text-center">
@@ -1242,7 +1239,7 @@ function confirmarEliminarCobro(cobro) {
             type="submit"
             :loading="guardando"
             :disabled="!nuevaAreaConfig.area_id"
-            label="Activar Área"
+            label="Agregar área"
             icon="pi pi-check"
             class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-semibold"
           />
