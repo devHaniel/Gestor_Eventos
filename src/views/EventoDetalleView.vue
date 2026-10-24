@@ -1158,7 +1158,7 @@ function confirmarEliminarCobro(cobro) {
         <p class="text-sm text-slate-700 font-semibold mb-2">Aún no tienes áreas en tu catálogo.</p>
         <p class="text-xs text-slate-500 mb-4">Puedes inicializar las áreas sugeridas (Cocina, Meseros, Barra, etc.) con un clic:</p>
         <Button
-          label="Crear Áreas Estándar de Banquetería"
+          label="Crear áreas básicas"
           icon="pi pi-sparkles"
           class="!bg-emerald-600 !border-emerald-600 text-xs"
           :loading="guardando"
@@ -1169,28 +1169,28 @@ function confirmarEliminarCobro(cobro) {
       <form v-else @submit.prevent="guardarActivarArea" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
-            Seleccionar Área del Catálogo <span class="text-rose-500">*</span>
+            Área <span class="text-rose-500">*</span>
           </label>
           <Select
             v-model="nuevaAreaConfig.area_id"
             :options="areasDisponiblesParaAgregar"
             optionLabel="nombre"
             optionValue="id"
-            placeholder="Selecciona un departamento..."
+            placeholder="Selecciona un área"
             class="w-full text-sm"
-            emptyMessage="Todas las áreas del catálogo ya están activas en este evento."
+            emptyMessage="Todas las áreas ya están en este evento."
           />
         </div>
 
         <div>
           <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
-            Modalidad de Pago para esta Área
+            Forma de pago
           </label>
           <Select
             v-model="nuevaAreaConfig.tipo_pago"
             :options="[
-              { label: 'Pago Individual (tarifa base o monto fijo por persona)', value: 'individual' },
-              { label: 'Por Área (monto global repartido entre el equipo)', value: 'por_area' },
+              { label: 'Por persona', value: 'individual' },
+              { label: 'Monto por área', value: 'por_area' },
             ]"
             optionLabel="label"
             optionValue="value"
@@ -1201,13 +1201,13 @@ function confirmarEliminarCobro(cobro) {
         <div v-if="nuevaAreaConfig.tipo_pago === 'por_area'" class="space-y-4 p-3.5 bg-slate-50 rounded-lg border border-slate-200">
           <div>
             <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
-              Método de Reparto
+              Repartir
             </label>
             <Select
               v-model="nuevaAreaConfig.metodo_reparto"
               :options="[
-                { label: 'Equitativo (partes iguales entre integrantes)', value: 'equitativo' },
-                { label: 'Por Horas Trabajadas (proporcional)', value: 'por_horas' },
+                { label: 'En partes iguales', value: 'equitativo' },
+                { label: 'Según las horas', value: 'por_horas' },
               ]"
               optionLabel="label"
               optionValue="value"
@@ -1217,7 +1217,7 @@ function confirmarEliminarCobro(cobro) {
 
           <div>
             <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
-              Monto Bolsa Total a Repartir (HNL)
+              Monto del área (HNL)
             </label>
             <InputNumber
               v-model="nuevaAreaConfig.monto_area"
