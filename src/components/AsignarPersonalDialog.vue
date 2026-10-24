@@ -215,12 +215,14 @@ function submit() {
         </div>
       </div>
 
-      <p
+      <Message
         v-else-if="areaActual?.tipo_pago === 'por_area'"
-        class="text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg p-3"
+        severity="info"
+        size="small"
+        icon="pi pi-info-circle"
       >
-        El monto de esta área se reparte automáticamente entre todo el personal.
-      </p>
+        El monto de esta área se reparte automáticamente entre todo el personal asignado.
+      </Message>
 
       <div>
         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
@@ -238,16 +240,15 @@ function submit() {
           type="button"
           label="Cancelar"
           severity="secondary"
-          text
+          variant="text"
           @click="$emit('update:visible', false)"
         />
         <Button
           type="submit"
           :loading="cargando"
           :disabled="!personalSeleccionadoId || !areaSeleccionadaId"
-          label="Asignar"
+          label="Asignar Personal"
           icon="pi pi-check"
-          class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600"
         />
       </div>
     </form>

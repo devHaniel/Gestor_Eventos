@@ -94,7 +94,7 @@ function limpiarFiltros() {
   <AppLayout>
     <template #header-title>
       <div>
-        <h2 class="text-lg font-bold text-slate-800">Eventos y Banquetería</h2>
+        <h2 class="text-base sm:text-lg font-bold text-slate-900">Eventos y Banquetería</h2>
         <p class="text-xs text-slate-500">Listado general de eventos, estados y resultados financieros</p>
       </div>
     </template>
@@ -103,150 +103,156 @@ function limpiarFiltros() {
       <Button
         label="Nuevo Evento"
         icon="pi pi-plus"
-        class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-medium text-sm"
+        size="small"
+        class="font-semibold text-xs"
         @click="dialogNuevo = true"
       />
     </template>
 
-    <!-- Contenedor Principal -->
-    <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
-      <!-- Filtros -->
-      <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row gap-3 items-center justify-between">
-        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <div class="relative w-full sm:w-72">
-            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <InputText
-              v-model="busqueda"
-              placeholder="Buscar por evento o cliente..."
-              class="w-full !pl-9 !py-1.5 text-sm"
+    <!-- Contenedor Principal con PrimeVue Card -->
+    <Card class="!shadow-xs !border !border-slate-200 overflow-hidden">
+      <template #header>
+        <!-- Filtros y Barra de Acciones -->
+        <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row gap-3 items-center justify-between bg-slate-50/60">
+          <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <IconField class="w-full sm:w-72">
+              <InputIcon class="pi pi-search text-slate-400" />
+              <InputText
+                v-model="busqueda"
+                placeholder="Buscar por evento o cliente..."
+                class="w-full text-xs"
+              />
+            </IconField>
+
+            <Select
+              v-model="filtroEstado"
+              :options="opcionesEstadoFiltro"
+              optionLabel="label"
+              optionValue="value"
+              class="w-full sm:w-48 text-xs"
             />
           </div>
 
-          <Select
-            v-model="filtroEstado"
-            :options="opcionesEstadoFiltro"
-            optionLabel="label"
-            optionValue="value"
-            class="w-full sm:w-48 text-sm"
+          <div class="text-xs text-slate-500 font-medium self-end md:self-center">
+            Total: <span class="font-bold text-slate-700">{{ eventosFiltrados.length }}</span> eventos
+          </div>
+        </div>
+      </template>
+
+      <template #content>
+        <!-- Estado vacío si no hay eventos -->
+        <div v-if="!cargando && listaEventos.length === 0" class="py-16 text-center px-4">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl mx-auto mb-3">
+            <i class="pi pi-calendar-plus"></i>
+          </div>
+          <h3 class="text-sm font-bold text-slate-800">No hay eventos registrados aún</h3>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1 mb-4">
+            Comienza creando tu primer banquete o evento para asignar áreas, colaboradores y controlar pagos.
+          </p>
+          <Button
+            label="Crear Primer Evento"
+            icon="pi pi-plus"
+            size="small"
+            class="text-xs"
+            @click="dialogNuevo = true"
           />
         </div>
 
-        <div class="text-xs text-slate-500 font-medium self-end md:self-center">
-          Total: <span class="font-bold text-slate-700">{{ eventosFiltrados.length }}</span> eventos
+        <!-- Estado vacío por filtro -->
+        <div v-else-if="!cargando && eventosFiltrados.length === 0" class="py-12 text-center text-slate-400">
+          <p class="text-sm font-medium text-slate-600">No hay eventos que coincidan con los filtros aplicados.</p>
+          <Button
+            label="Limpiar filtros"
+            variant="text"
+            size="small"
+            class="mt-2 !text-xs"
+            @click="limpiarFiltros"
+          />
         </div>
-      </div>
 
-      <!-- Estado vacío si la BD no tiene eventos -->
-      <div v-if="!cargando && listaEventos.length === 0" class="py-16 text-center px-4">
-        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs">
-          <i class="pi pi-calendar-plus"></i>
-        </div>
-        <h3 class="text-base font-bold text-slate-800">No hay eventos registrados aún</h3>
-        <p class="text-xs text-slate-500 max-w-md mx-auto mt-1 mb-5">
-          Comienza creando tu primer banquete o evento para asignar áreas, personal y llevar el control de pagos y ganancias.
-        </p>
-        <Button
-          label="Crear Primer Evento"
-          icon="pi pi-plus"
-          class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-medium text-xs"
-          @click="dialogNuevo = true"
-        />
-      </div>
+        <!-- Tabla PrimeVue -->
+        <DataTable
+          v-else
+          :value="eventosFiltrados"
+          :loading="cargando"
+          paginator
+          :rows="10"
+          :rowsPerPageOptions="[10, 25, 50]"
+          tableStyle="min-width: 55rem"
+          class="p-datatable-sm"
+          selectionMode="single"
+          @row-click="onFilaSeleccionada"
+          rowHover
+        >
+          <Column field="nombre" header="Evento" sortable>
+            <template #body="{ data }">
+              <div class="font-semibold text-slate-900 hover:text-emerald-700 transition-colors cursor-pointer text-xs">
+                {{ data.nombre }}
+              </div>
+              <div class="text-[11px] text-slate-400 font-normal">
+                {{ data.cliente }}
+              </div>
+            </template>
+          </Column>
 
-      <!-- Estado vacío por filtro -->
-      <div v-else-if="!cargando && eventosFiltrados.length === 0" class="py-12 text-center text-slate-400">
-        <p class="text-sm font-medium text-slate-600">No hay eventos que coincidan con los filtros aplicados.</p>
-        <Button
-          label="Limpiar filtros"
-          text
-          size="small"
-          class="mt-2 !text-xs !text-emerald-600"
-          @click="limpiarFiltros"
-        />
-      </div>
+          <Column field="fecha" header="Fecha" sortable>
+            <template #body="{ data }">
+              <div class="flex items-center gap-1.5 text-xs text-slate-700">
+                <i class="pi pi-calendar text-slate-400 text-[11px]"></i>
+                <span class="font-mono">{{ formatearFecha(data.fecha) }}</span>
+              </div>
+            </template>
+          </Column>
 
-      <!-- Tabla de Eventos -->
-      <DataTable
-        v-else
-        :value="eventosFiltrados"
-        :loading="cargando"
-        paginator
-        :rows="10"
-        :rowsPerPageOptions="[10, 25, 50]"
-        tableStyle="min-width: 60rem"
-        class="p-datatable-sm"
-        selectionMode="single"
-        @row-click="onFilaSeleccionada"
-        rowHover
-      >
-        <Column field="nombre" header="Evento" sortable>
-          <template #body="{ data }">
-            <div class="font-bold text-slate-800 hover:text-emerald-600 transition-colors cursor-pointer">
-              {{ data.nombre }}
-            </div>
-            <div class="text-xs text-slate-500 font-normal">
-              {{ data.cliente }}
-            </div>
-          </template>
-        </Column>
+          <Column field="estado" header="Estado" sortable>
+            <template #body="{ data }">
+              <Tag
+                :value="etiquetaEstado(data.estado)"
+                :severity="severidadEstado(data.estado)"
+                class="!text-xs uppercase tracking-wider font-bold"
+              />
+            </template>
+          </Column>
 
-        <Column field="fecha" header="Fecha" sortable>
-          <template #body="{ data }">
-            <div class="flex items-center gap-1.5 text-xs text-slate-700">
-              <i class="pi pi-calendar text-slate-400 text-[11px]"></i>
-              <span>{{ formatearFecha(data.fecha) }}</span>
-            </div>
-          </template>
-        </Column>
+          <Column field="ingreso_pactado" header="Ingreso Pactado" sortable>
+            <template #body="{ data }">
+              <span class="font-mono text-xs text-slate-700 font-medium">
+                {{ formatearMoneda(data.ingreso_pactado) }}
+              </span>
+            </template>
+          </Column>
 
-        <Column field="estado" header="Estado" sortable>
-          <template #body="{ data }">
-            <Tag
-              :value="etiquetaEstado(data.estado)"
-              :severity="severidadEstado(data.estado)"
-              class="!text-xs uppercase tracking-wider font-bold"
-            />
-          </template>
-        </Column>
+          <Column field="ganancia_neta" header="Ganancia Neta" sortable>
+            <template #body="{ data }">
+              <span
+                class="font-mono text-xs font-bold px-2 py-0.5 rounded"
+                :class="
+                  (data.ganancia_neta ?? 0) >= 0
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                    : 'bg-rose-50 text-rose-700 border border-rose-200/80'
+                "
+              >
+                {{ formatearMoneda(data.ganancia_neta) }}
+              </span>
+            </template>
+          </Column>
 
-        <Column field="ingreso_pactado" header="Ingreso" sortable>
-          <template #body="{ data }">
-            <span class="font-mono text-xs text-slate-700 font-medium">
-              {{ formatearMoneda(data.ingreso_pactado) }}
-            </span>
-          </template>
-        </Column>
-
-        <Column field="ganancia_neta" header="Ganancia" sortable>
-          <template #body="{ data }">
-            <span
-              class="font-mono text-xs font-bold px-2 py-0.5 rounded"
-              :class="
-                (data.ganancia_neta ?? 0) >= 0
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  : 'bg-rose-50 text-rose-700 border border-rose-200'
-              "
-            >
-              {{ formatearMoneda(data.ganancia_neta) }}
-            </span>
-          </template>
-        </Column>
-
-        <Column header="" headerStyle="width: 3.5rem" bodyClass="text-right">
-          <template #body="{ data }">
-            <Button
-              icon="pi pi-chevron-right"
-              severity="secondary"
-              text
-              rounded
-              size="small"
-              title="Ver detalle del evento"
-              @click.stop="router.push(`/eventos/${data.evento_id || data.id}`)"
-            />
-          </template>
-        </Column>
-      </DataTable>
-    </div>
+          <Column header="" headerStyle="width: 3.5rem" bodyClass="text-right">
+            <template #body="{ data }">
+              <Button
+                icon="pi pi-chevron-right"
+                severity="secondary"
+                variant="text"
+                rounded
+                size="small"
+                title="Ver detalle del evento"
+                @click.stop="router.push(`/eventos/${data.evento_id || data.id}`)"
+              />
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
 
     <!-- Modal Nuevo Evento -->
     <Dialog

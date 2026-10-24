@@ -179,20 +179,24 @@ function confirmarEliminarPago(pago) {
             </label>
             <!-- Atajos rápidos -->
             <div class="flex items-center gap-1.5" v-if="pendiente > 0">
-              <button
+              <Button
                 type="button"
+                :label="`Total (${formatearMoneda(pendiente)})`"
+                size="small"
+                severity="success"
+                variant="outlined"
+                class="!text-[11px] !py-0.5 !px-2"
                 @click="fijarTotalPendiente"
-                class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 transition-colors"
-              >
-                Total ({{ formatearMoneda(pendiente) }})
-              </button>
-              <button
+              />
+              <Button
                 type="button"
+                :label="`50% (${formatearMoneda(pendiente / 2)})`"
+                size="small"
+                severity="secondary"
+                variant="outlined"
+                class="!text-[11px] !py-0.5 !px-2"
                 @click="fijarMitadPendiente"
-                class="text-[11px] font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded border border-slate-200 transition-colors"
-              >
-                50% ({{ formatearMoneda(pendiente / 2) }})
-              </button>
+              />
             </div>
           </div>
 
@@ -235,11 +239,13 @@ function confirmarEliminarPago(pago) {
             <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
               Fecha del Abono
             </label>
-            <input
-              type="date"
+            <DatePicker
               v-model="fecha"
-              required
-              class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-md shadow-xs focus:ring-2 focus:ring-emerald-500"
+              dateFormat="yy-mm-dd"
+              updateModelType="string"
+              showIcon
+              class="w-full text-sm"
+              placeholder="YYYY-MM-DD"
             />
           </div>
         </div>
@@ -273,7 +279,7 @@ function confirmarEliminarPago(pago) {
             type="button"
             label="Cancelar"
             severity="secondary"
-            text
+            variant="text"
             @click="$emit('update:visible', false)"
           />
           <Button
@@ -282,7 +288,6 @@ function confirmarEliminarPago(pago) {
             :disabled="monto <= 0"
             label="Registrar Pago"
             icon="pi pi-check"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-semibold text-sm"
           />
         </div>
       </form>

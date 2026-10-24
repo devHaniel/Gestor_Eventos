@@ -29,53 +29,71 @@ const gananciaNeta = computed(() => Number(props.resumen?.ganancia_neta) || 0)
 </script>
 
 <template>
-  <div class="bg-white rounded-xl border border-slate-200 p-4">
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-      <div>
-        <p class="text-xs text-slate-500">Ingreso pactado</p>
-        <p class="text-base font-semibold text-slate-800 mt-0.5">
-          {{ formatearMoneda(resumen?.ingreso_pactado) }}
-        </p>
-      </div>
+  <Card class="!shadow-xs !border !border-slate-200">
+    <template #content>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
+        <!-- Ingreso pactado -->
+        <div class="space-y-0.5">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Ingreso pactado</span>
+          <div class="text-base font-bold font-mono text-slate-900">
+            {{ formatearMoneda(resumen?.ingreso_pactado) }}
+          </div>
+          <span class="text-[11px] text-slate-400">Total presupuestado</span>
+        </div>
 
-      <div>
-        <p class="text-xs text-slate-500">Cobrado</p>
-        <p class="text-base font-semibold text-emerald-600 mt-0.5">
-          {{ formatearMoneda(resumen?.cobrado) }}
-        </p>
-        <p class="text-[11px] text-slate-400">
-          Falta {{ formatearMoneda(pendienteCobro) }}
-        </p>
-      </div>
+        <!-- Cobrado al cliente -->
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Cobrado</span>
+            <Tag v-if="pendienteCobro === 0 && Number(resumen?.ingreso_pactado) > 0" value="100%" severity="success" class="!text-[10px] !py-0 !px-1" />
+          </div>
+          <div class="text-base font-bold font-mono text-emerald-600">
+            {{ formatearMoneda(resumen?.cobrado) }}
+          </div>
+          <span class="text-[11px] text-slate-500">
+            Pendiente: <strong class="font-mono text-slate-700">{{ formatearMoneda(pendienteCobro) }}</strong>
+          </span>
+        </div>
 
-      <div>
-        <p class="text-xs text-slate-500">Personal</p>
-        <p class="text-base font-semibold text-slate-800 mt-0.5">
-          {{ formatearMoneda(resumen?.costo_personal) }}
-        </p>
-        <p class="text-[11px] text-slate-400">
-          Por pagar {{ formatearMoneda(pendientePersonal) }}
-        </p>
-      </div>
+        <!-- Personal -->
+        <div class="space-y-0.5">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Personal</span>
+          <div class="text-base font-bold font-mono text-slate-900">
+            {{ formatearMoneda(resumen?.costo_personal) }}
+          </div>
+          <span class="text-[11px]" :class="pendientePersonal > 0 ? 'text-amber-600 font-medium' : 'text-slate-400'">
+            Por pagar: <strong class="font-mono">{{ formatearMoneda(pendientePersonal) }}</strong>
+          </span>
+        </div>
 
-      <div>
-        <p class="text-xs text-slate-500">Gastos</p>
-        <p class="text-base font-semibold text-slate-800 mt-0.5">
-          {{ formatearMoneda(resumen?.total_gastos) }}
-        </p>
-      </div>
+        <!-- Gastos operativos -->
+        <div class="space-y-0.5">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Gastos extras</span>
+          <div class="text-base font-bold font-mono text-slate-900">
+            {{ formatearMoneda(resumen?.total_gastos) }}
+          </div>
+          <span class="text-[11px] text-slate-400">Compras e insumos</span>
+        </div>
 
-      <div class="rounded-lg px-3 py-2 -my-1" :class="gananciaNeta >= 0 ? 'bg-emerald-50' : 'bg-rose-50'">
-        <p class="text-xs" :class="gananciaNeta >= 0 ? 'text-emerald-700' : 'text-rose-700'">
-          Ganancia neta
-        </p>
-        <p
-          class="text-lg font-bold mt-0.5"
-          :class="gananciaNeta >= 0 ? 'text-emerald-700' : 'text-rose-700'"
+        <!-- Ganancia neta -->
+        <div
+          class="p-3 rounded-lg border flex flex-col justify-center"
+          :class="gananciaNeta >= 0 ? 'bg-emerald-50/70 border-emerald-200/80' : 'bg-rose-50/70 border-rose-200/80'"
         >
-          {{ formatearMoneda(gananciaNeta) }}
-        </p>
+          <span
+            class="text-xs font-semibold uppercase tracking-wider"
+            :class="gananciaNeta >= 0 ? 'text-emerald-800' : 'text-rose-800'"
+          >
+            Ganancia neta
+          </span>
+          <div
+            class="text-lg font-extrabold font-mono"
+            :class="gananciaNeta >= 0 ? 'text-emerald-700' : 'text-rose-700'"
+          >
+            {{ formatearMoneda(gananciaNeta) }}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </Card>
 </template>

@@ -100,11 +100,11 @@ async function guardar() {
 function confirmarCargarSugeridas() {
   confirm.require({
     message: '¿Deseas inicializar el catálogo con las 5 áreas estándar de banquetería (Cocina, Meseros, Barra, Montaje y Pastelería)?',
-    header: 'Cargar Áreas Sugeridas',
-    icon: 'pi pi-sparkles',
-    acceptLabel: 'Crear Áreas Sugeridas',
+    header: 'Cargar Áreas Estándar',
+    icon: 'pi pi-th-large',
+    acceptLabel: 'Crear Áreas Estándar',
     rejectLabel: 'Cancelar',
-    acceptClass: 'p-button-success',
+    acceptClass: 'p-button-primary',
     accept: async () => {
       guardando.value = true
       try {
@@ -153,8 +153,8 @@ async function toggleEstado(area) {
   <AppLayout>
     <template #header-title>
       <div>
-        <h2 class="text-lg font-bold text-slate-800">Catálogo de Áreas Operativas</h2>
-        <p class="text-xs text-slate-500">Configura departamentos y equipos de servicio para tus eventos</p>
+        <h2 class="text-base sm:text-lg font-bold text-slate-900">Catálogo de Áreas Operativas</h2>
+        <p class="text-xs text-slate-500">Configuración de departamentos de servicio para eventos</p>
       </div>
     </template>
 
@@ -163,113 +163,123 @@ async function toggleEstado(area) {
         <Button
           v-if="catalogoAreas.length === 0"
           label="Crear Áreas Estándar"
-          icon="pi pi-sparkles"
+          icon="pi pi-th-large"
           severity="secondary"
+          variant="outlined"
           size="small"
-          class="!text-xs font-semibold"
+          class="font-semibold text-xs"
           @click="confirmarCargarSugeridas"
         />
         <Button
           label="Nueva Área"
           icon="pi pi-plus"
-          class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-medium text-sm"
+          size="small"
+          class="font-semibold text-xs"
           @click="abrirNueva"
         />
       </div>
     </template>
 
-    <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
-      <!-- Filtro y contador -->
-      <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div class="relative w-full sm:w-80">
-          <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <InputText
-            v-model="busqueda"
-            placeholder="Buscar área por nombre..."
-            class="w-full !pl-9 !py-1.5 text-sm"
-          />
-        </div>
-        <div class="text-xs text-slate-500 font-medium self-end sm:self-center">
-          Total: <span class="font-bold text-slate-700">{{ areasFiltradas.length }}</span> áreas
-        </div>
-      </div>
-
-      <!-- Estado vacío con onboarding -->
-      <div v-if="!cargando && catalogoAreas.length === 0" class="py-16 text-center px-4">
-        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs">
-          <i class="pi pi-th-large"></i>
-        </div>
-        <h3 class="text-base font-bold text-slate-800">No hay áreas configuradas aún</h3>
-        <p class="text-xs text-slate-500 max-w-md mx-auto mt-1 mb-5">
-          Las áreas definen los departamentos del evento (como Cocina, Meseros o Barra) para asignar personal y definir modalidades de pago.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button
-            label="Inicializar con Áreas Estándar"
-            icon="pi pi-sparkles"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-medium text-xs"
-            @click="confirmarCargarSugeridas"
-          />
-          <Button
-            label="Crear Área Personalizada"
-            icon="pi pi-plus"
-            severity="secondary"
-            class="!text-xs font-medium"
-            @click="abrirNueva"
-          />
-        </div>
-      </div>
-
-      <!-- Tabla de Áreas -->
-      <DataTable
-        v-else
-        :value="areasFiltradas"
-        :loading="cargando"
-        paginator
-        :rows="10"
-        tableStyle="min-width: 40rem"
-        class="p-datatable-sm"
-        emptyMessage="No se encontraron áreas coincidentes."
-      >
-        <Column field="nombre" header="Nombre del Área" sortable>
-          <template #body="{ data }">
-            <span class="font-bold text-slate-800">{{ data.nombre }}</span>
-          </template>
-        </Column>
-
-        <Column field="descripcion" header="Descripción y Responsabilidades">
-          <template #body="{ data }">
-            <span class="text-xs text-slate-600">{{ data.descripcion || '-' }}</span>
-          </template>
-        </Column>
-
-        <Column field="activa" header="Estado" sortable>
-          <template #body="{ data }">
-            <Tag
-              :value="data.activa ? 'Activa' : 'Inactiva'"
-              :severity="data.activa ? 'success' : 'secondary'"
-              class="!text-xs cursor-pointer select-none"
-              title="Clic para alternar estado"
-              @click="toggleEstado(data)"
+    <!-- Contenedor Principal con PrimeVue Card -->
+    <Card class="!shadow-xs !border !border-slate-200 overflow-hidden">
+      <template #header>
+        <!-- Filtro y contador -->
+        <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50/60">
+          <IconField class="w-full sm:w-80">
+            <InputIcon class="pi pi-search text-slate-400" />
+            <InputText
+              v-model="busqueda"
+              placeholder="Buscar área por nombre..."
+              class="w-full text-xs"
             />
-          </template>
-        </Column>
+          </IconField>
+          <div class="text-xs text-slate-500 font-medium self-end sm:self-center">
+            Total: <span class="font-bold text-slate-700">{{ areasFiltradas.length }}</span> áreas
+          </div>
+        </div>
+      </template>
 
-        <Column header="Acciones" headerStyle="width: 6rem" bodyClass="text-right">
-          <template #body="{ data }">
+      <template #content>
+        <!-- Estado vacío con onboarding -->
+        <div v-if="!cargando && catalogoAreas.length === 0" class="py-16 text-center px-4">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl mx-auto mb-3">
+            <i class="pi pi-th-large"></i>
+          </div>
+          <h3 class="text-sm font-bold text-slate-800">No hay áreas configuradas aún</h3>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mt-1 mb-4">
+            Las áreas definen los departamentos de trabajo (Cocina, Meseros, Barra) para organizar asignaciones y modalidades de pago.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-2">
             <Button
-              icon="pi pi-pencil"
-              severity="secondary"
-              text
-              rounded
+              label="Inicializar con Áreas Estándar"
+              icon="pi pi-th-large"
               size="small"
-              title="Editar área"
-              @click="abrirEditar(data)"
+              class="text-xs"
+              @click="confirmarCargarSugeridas"
             />
-          </template>
-        </Column>
-      </DataTable>
-    </div>
+            <Button
+              label="Crear Área Manual"
+              icon="pi pi-plus"
+              severity="secondary"
+              variant="outlined"
+              size="small"
+              class="text-xs"
+              @click="abrirNueva"
+            />
+          </div>
+        </div>
+
+        <!-- Tabla de Áreas -->
+        <DataTable
+          v-else
+          :value="areasFiltradas"
+          :loading="cargando"
+          paginator
+          :rows="10"
+          tableStyle="min-width: 40rem"
+          class="p-datatable-sm"
+          emptyMessage="No se encontraron áreas coincidentes."
+        >
+          <Column field="nombre" header="Nombre del Área" sortable>
+            <template #body="{ data }">
+              <span class="font-semibold text-slate-900 text-xs">{{ data.nombre }}</span>
+            </template>
+          </Column>
+
+          <Column field="descripcion" header="Descripción y Responsabilidades">
+            <template #body="{ data }">
+              <span class="text-xs text-slate-600">{{ data.descripcion || '-' }}</span>
+            </template>
+          </Column>
+
+          <Column field="activa" header="Estado" sortable>
+            <template #body="{ data }">
+              <Tag
+                :value="data.activa ? 'Activa' : 'Inactiva'"
+                :severity="data.activa ? 'success' : 'secondary'"
+                class="!text-xs cursor-pointer select-none font-semibold"
+                title="Clic para alternar estado"
+                @click="toggleEstado(data)"
+              />
+            </template>
+          </Column>
+
+          <Column header="Acciones" headerStyle="width: 5rem" bodyClass="text-right">
+            <template #body="{ data }">
+              <Button
+                icon="pi pi-pencil"
+                severity="secondary"
+                variant="text"
+                rounded
+                size="small"
+                title="Editar área"
+                @click="abrirEditar(data)"
+              />
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
 
     <!-- Modal Formulario Área -->
     <Dialog
@@ -303,16 +313,19 @@ async function toggleEstado(area) {
           />
         </div>
 
-        <div class="flex items-center gap-2 pt-1">
-          <input
-            id="activa-check"
-            type="checkbox"
-            v-model="formulario.activa"
-            class="w-4 h-4 rounded text-emerald-600 border-slate-300"
-          />
-          <label for="activa-check" class="text-xs font-medium text-slate-700 cursor-pointer">
-            Área Activa (disponible para asignaciones en eventos)
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
+            Estado
           </label>
+          <div class="flex items-center gap-2.5 pt-1">
+            <ToggleSwitch
+              v-model="formulario.activa"
+              inputId="activa-check"
+            />
+            <label for="activa-check" class="text-xs font-medium text-slate-700 cursor-pointer select-none">
+              Área Activa (disponible para asignaciones en eventos)
+            </label>
+          </div>
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
@@ -320,7 +333,7 @@ async function toggleEstado(area) {
             type="button"
             label="Cancelar"
             severity="secondary"
-            text
+            variant="text"
             @click="dialogAbierto = false"
           />
           <Button
@@ -328,7 +341,6 @@ async function toggleEstado(area) {
             :loading="guardando"
             label="Guardar Área"
             icon="pi pi-check"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-semibold"
           />
         </div>
       </form>

@@ -95,7 +95,7 @@ function submit() {
           v-model="formulario.nombre"
           required
           placeholder="Ej: Boda Martínez & López"
-          class="w-full"
+          class="w-full text-sm"
         />
       </div>
 
@@ -107,7 +107,7 @@ function submit() {
           v-model="formulario.cliente"
           required
           placeholder="Ej: Banco Atlántida / Laura M."
-          class="w-full"
+          class="w-full text-sm"
         />
       </div>
     </div>
@@ -120,7 +120,7 @@ function submit() {
         <InputText
           v-model="formulario.lugar"
           placeholder="Ej: Salón Real, Hotel Clarion"
-          class="w-full"
+          class="w-full text-sm"
         />
       </div>
 
@@ -128,11 +128,13 @@ function submit() {
         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
           Fecha del Evento <span class="text-rose-500">*</span>
         </label>
-        <input
-          type="date"
+        <DatePicker
           v-model="formulario.fecha"
-          required
-          class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          dateFormat="yy-mm-dd"
+          updateModelType="string"
+          showIcon
+          class="w-full text-sm"
+          placeholder="YYYY-MM-DD"
         />
       </div>
     </div>
@@ -142,10 +144,10 @@ function submit() {
         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
           Hora de Inicio
         </label>
-        <input
+        <InputText
           type="time"
           v-model="formulario.hora_inicio"
-          class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          class="w-full text-sm"
         />
       </div>
 
@@ -153,10 +155,10 @@ function submit() {
         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
           Hora de Fin
         </label>
-        <input
+        <InputText
           type="time"
           v-model="formulario.hora_fin"
-          class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          class="w-full text-sm"
         />
       </div>
 
@@ -168,7 +170,7 @@ function submit() {
           v-model="formulario.num_invitados"
           :min="0"
           placeholder="Ej: 150"
-          class="w-full"
+          class="w-full text-sm"
         />
       </div>
     </div>
@@ -185,7 +187,7 @@ function submit() {
           :min="0"
           mode="decimal"
           placeholder="0.00"
-          class="w-full"
+          class="w-full text-sm font-mono"
         />
       </div>
 
@@ -199,7 +201,7 @@ function submit() {
           optionLabel="label"
           optionValue="value"
           placeholder="Seleccionar estado"
-          class="w-full"
+          class="w-full text-sm"
         />
       </div>
     </div>
@@ -212,7 +214,7 @@ function submit() {
         v-model="formulario.notas"
         rows="2"
         placeholder="Detalles del menú, requerimientos especiales del cliente..."
-        class="w-full"
+        class="w-full text-sm"
       />
     </div>
 
@@ -221,7 +223,7 @@ function submit() {
         type="button"
         label="Cancelar"
         severity="secondary"
-        text
+        variant="text"
         @click="$emit('cancelar')"
       />
       <Button
@@ -229,7 +231,6 @@ function submit() {
         :loading="cargando"
         :label="evento ? 'Guardar Cambios' : 'Crear Evento'"
         icon="pi pi-check"
-        class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600"
       />
     </div>
   </form>

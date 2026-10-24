@@ -131,14 +131,12 @@ function submit() {
       <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
         Estado
       </label>
-      <div class="flex items-center gap-2 pt-1">
-        <input
-          id="activo-check"
-          type="checkbox"
+      <div class="flex items-center gap-2.5 pt-1">
+        <ToggleSwitch
           v-model="formulario.activo"
-          class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
+          inputId="activo-check"
         />
-        <label for="activo-check" class="text-sm text-slate-700 cursor-pointer">
+        <label for="activo-check" class="text-sm text-slate-700 cursor-pointer select-none">
           Personal Activo (disponible para asignaciones)
         </label>
       </div>
@@ -152,7 +150,7 @@ function submit() {
         v-model="formulario.notas"
         rows="2"
         placeholder="Observaciones, alergias, habilidades..."
-        class="w-full"
+        class="w-full text-sm"
       />
     </div>
 
@@ -161,7 +159,7 @@ function submit() {
         type="button"
         label="Cancelar"
         severity="secondary"
-        text
+        variant="text"
         @click="$emit('cancelar')"
       />
       <Button
@@ -169,7 +167,6 @@ function submit() {
         :loading="cargando"
         :label="personal ? 'Actualizar' : 'Guardar Personal'"
         icon="pi pi-check"
-        class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600"
       />
     </div>
   </form>

@@ -42,7 +42,7 @@ const proximosEventos = computed(() => {
     .slice(0, 5)
 })
 
-// Total pendiente de pago al personal (calculado de v_resumen_evento: costo_personal - personal_pagado)
+// Total pendiente de pago al personal
 const totalPendientePersonal = computed(() => {
   return listaEventos.value.reduce((sum, e) => {
     const costo = Number(e.costo_personal) || 0
@@ -100,8 +100,8 @@ async function guardarNuevoEvento(datos) {
   <AppLayout>
     <template #header-title>
       <div>
-        <h2 class="text-lg font-bold text-slate-800">Panel de Control General</h2>
-        <p class="text-xs text-slate-500">Visión global de eventos, saldos pendientes y rentabilidad</p>
+        <h2 class="text-base sm:text-lg font-bold text-slate-900">Panel de Control General</h2>
+        <p class="text-xs text-slate-500">Métricas operativas, estado de eventos y rentabilidad financiera</p>
       </div>
     </template>
 
@@ -109,170 +109,192 @@ async function guardarNuevoEvento(datos) {
       <Button
         label="Nuevo Evento"
         icon="pi pi-plus"
-        class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-medium text-sm"
+        size="small"
+        class="font-semibold text-xs"
         @click="dialogNuevoEvento = true"
       />
     </template>
 
     <div class="space-y-6">
-      <!-- Tarjetas de Métricas Clave -->
+      <!-- Tarjetas de Métricas Clave con PrimeVue Card -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Eventos en Curso -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Eventos en Curso</span>
-            <div class="text-2xl font-bold font-mono text-slate-800 mt-1">
-              {{ eventosEnCurso.length }}
+        <Card class="!shadow-xs !border !border-slate-200">
+          <template #content>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">En Curso</span>
+                <div class="text-2xl font-bold font-mono text-slate-900 mt-1">
+                  {{ eventosEnCurso.length }}
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Operando en este momento</p>
+              </div>
+              <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-lg">
+                <i class="pi pi-clock"></i>
+              </div>
             </div>
-            <p class="text-xs text-slate-400 mt-1">Ahora</p>
-          </div>
-          <div class="w-11 h-11 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
-            <i class="pi pi-hourglass"></i>
-          </div>
-        </div>
+          </template>
+        </Card>
 
         <!-- Próximos Eventos -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Próximos Eventos</span>
-            <div class="text-2xl font-bold font-mono text-slate-800 mt-1">
-              {{ proximosEventos.length }}
+        <Card class="!shadow-xs !border !border-slate-200">
+          <template #content>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Próximos Eventos</span>
+                <div class="text-2xl font-bold font-mono text-slate-900 mt-1">
+                  {{ proximosEventos.length }}
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Agendados a futuro</p>
+              </div>
+              <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-lg">
+                <i class="pi pi-calendar"></i>
+              </div>
             </div>
-            <p class="text-xs text-slate-400 mt-1">Por venir</p>
-          </div>
-          <div class="w-11 h-11 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-lg">
-            <i class="pi pi-calendar"></i>
-          </div>
-        </div>
+          </template>
+        </Card>
 
         <!-- Total Pendiente Personal -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Pendiente Personal</span>
-            <div class="text-xl font-bold font-mono text-amber-600 mt-1">
-              {{ formatearMoneda(totalPendientePersonal) }}
+        <Card class="!shadow-xs !border !border-slate-200">
+          <template #content>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Pendiente Personal</span>
+                <div class="text-xl font-bold font-mono text-amber-600 mt-1">
+                  {{ formatearMoneda(totalPendientePersonal) }}
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Saldos por liquidar</p>
+              </div>
+              <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-lg">
+                <i class="pi pi-users"></i>
+              </div>
             </div>
-            <p class="text-xs text-slate-400 mt-1">Por pagar</p>
-          </div>
-          <div class="w-11 h-11 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
-            <i class="pi pi-users"></i>
-          </div>
-        </div>
+          </template>
+        </Card>
 
         <!-- Ganancia Neta del Mes -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Ganancia del Mes</span>
-            <div
-              class="text-xl font-bold font-mono mt-1"
-              :class="gananciaNetaMes >= 0 ? 'text-emerald-600' : 'text-rose-600'"
-            >
-              {{ formatearMoneda(gananciaNetaMes) }}
+        <Card class="!shadow-xs !border !border-slate-200">
+          <template #content>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Ganancia del Mes</span>
+                <div
+                  class="text-xl font-bold font-mono mt-1"
+                  :class="gananciaNetaMes >= 0 ? 'text-emerald-600' : 'text-rose-600'"
+                >
+                  {{ formatearMoneda(gananciaNetaMes) }}
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">
+                  Acumulado: {{ formatearMoneda(gananciaTotalAcumulada) }}
+                </p>
+              </div>
+              <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                <i class="pi pi-chart-line"></i>
+              </div>
             </div>
-            <p class="text-xs text-slate-400 mt-1">
-              Total acumulado: {{ formatearMoneda(gananciaTotalAcumulada) }}
-            </p>
-          </div>
-          <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
-            <i class="pi pi-chart-line"></i>
-          </div>
-        </div>
+          </template>
+        </Card>
       </div>
 
       <!-- Sección de Próximos Eventos -->
-      <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="pi pi-calendar-clock text-slate-500"></i>
-            <h3 class="text-sm font-bold text-slate-800">Próximos eventos</h3>
+      <Card class="!shadow-xs !border !border-slate-200 overflow-hidden">
+        <template #header>
+          <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-calendar text-slate-500 text-sm"></i>
+              <h3 class="text-sm font-bold text-slate-800">Próximos eventos agendados</h3>
+            </div>
+            <router-link
+              to="/eventos"
+              class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 transition-colors"
+            >
+              <span>Ver todos</span>
+              <i class="pi pi-arrow-right text-[10px]"></i>
+            </router-link>
           </div>
-          <router-link
-            to="/eventos"
-            class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+        </template>
+
+        <template #content>
+          <!-- Estado vacío -->
+          <div v-if="!cargando && proximosEventos.length === 0" class="py-12 text-center px-4">
+            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xl mx-auto mb-2 text-slate-400">
+              <i class="pi pi-calendar"></i>
+            </div>
+            <p class="text-sm font-medium text-slate-700">No hay eventos programados a futuro</p>
+            <p class="text-xs text-slate-400 mt-0.5 mb-3">Registra un nuevo banquete para visualizarlo en el cronograma.</p>
+            <Button
+              label="Registrar Evento"
+              icon="pi pi-plus"
+              size="small"
+              class="text-xs"
+              @click="dialogNuevoEvento = true"
+            />
+          </div>
+
+          <!-- Tabla PrimeVue -->
+          <DataTable
+            v-else
+            :value="proximosEventos"
+            :loading="cargando"
+            tableStyle="min-width: 45rem"
+            class="p-datatable-sm"
           >
-            <span>Ver todos los eventos</span>
-            <i class="pi pi-arrow-right text-[10px]"></i>
-          </router-link>
-        </div>
+            <Column field="fecha" header="Fecha">
+              <template #body="{ data }">
+                <span class="text-xs font-mono font-medium text-slate-700">
+                  {{ formatearFecha(data.fecha) }}
+                </span>
+              </template>
+            </Column>
 
-        <!-- Estado vacío si no hay eventos agendados -->
-        <div v-if="!cargando && proximosEventos.length === 0" class="py-12 text-center px-4">
-          <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xl mx-auto mb-2 text-slate-400">
-            <i class="pi pi-calendar"></i>
-          </div>
-          <p class="text-sm font-medium text-slate-600">No hay eventos programados a futuro</p>
-          <p class="text-xs text-slate-400 mt-0.5 mb-3">Registra tu próximo banquete para visualizarlo aquí.</p>
-          <Button
-            label="Registrar Evento"
-            icon="pi pi-plus"
-            size="small"
-            class="!bg-emerald-600 !border-emerald-600 !text-xs"
-            @click="dialogNuevoEvento = true"
-          />
-        </div>
+            <Column field="nombre" header="Evento">
+              <template #body="{ data }">
+                <router-link
+                  :to="`/eventos/${data.evento_id || data.id}`"
+                  class="font-semibold text-slate-800 hover:text-emerald-700 transition-colors text-xs"
+                >
+                  {{ data.nombre }}
+                </router-link>
+                <div class="text-[11px] text-slate-400">{{ data.cliente }}</div>
+              </template>
+            </Column>
 
-        <DataTable
-          v-else
-          :value="proximosEventos"
-          :loading="cargando"
-          tableStyle="min-width: 45rem"
-          class="p-datatable-sm"
-        >
-          <Column field="fecha" header="Fecha">
-            <template #body="{ data }">
-              <span class="text-xs font-mono font-medium text-slate-700">
-                {{ formatearFecha(data.fecha) }}
-              </span>
-            </template>
-          </Column>
+            <Column field="estado" header="Estado">
+              <template #body="{ data }">
+                <Tag
+                  :value="etiquetaEstado(data.estado)"
+                  :severity="severidadEstado(data.estado)"
+                  class="!text-xs uppercase tracking-wider font-bold"
+                />
+              </template>
+            </Column>
 
-          <Column field="nombre" header="Evento">
-            <template #body="{ data }">
-              <router-link
-                :to="`/eventos/${data.evento_id || data.id}`"
-                class="font-bold text-slate-800 hover:text-emerald-600 transition-colors"
-              >
-                {{ data.nombre }}
-              </router-link>
-              <div class="text-[11px] text-slate-400">{{ data.cliente }}</div>
-            </template>
-          </Column>
+            <Column field="ganancia_neta" header="Ganancia">
+              <template #body="{ data }">
+                <span
+                  class="font-mono text-xs font-bold"
+                  :class="(data.ganancia_neta ?? 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'"
+                >
+                  {{ formatearMoneda(data.ganancia_neta) }}
+                </span>
+              </template>
+            </Column>
 
-          <Column field="estado" header="Estado">
-            <template #body="{ data }">
-              <Tag
-                :value="etiquetaEstado(data.estado)"
-                :severity="severidadEstado(data.estado)"
-                class="!text-xs uppercase tracking-wider font-bold"
-              />
-            </template>
-          </Column>
-
-          <Column field="ganancia_neta" header="Ganancia">
-            <template #body="{ data }">
-              <span
-                class="font-mono text-xs font-bold"
-                :class="(data.ganancia_neta ?? 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'"
-              >
-                {{ formatearMoneda(data.ganancia_neta) }}
-              </span>
-            </template>
-          </Column>
-
-          <Column header="" headerStyle="width: 4rem" bodyClass="text-right">
-            <template #body="{ data }">
-              <Button
-                icon="pi pi-chevron-right"
-                severity="secondary"
-                text
-                rounded
-                size="small"
-                @click="router.push(`/eventos/${data.evento_id || data.id}`)"
-              />
-            </template>
-          </Column>
-        </DataTable>
-      </div>
+            <Column header="" headerStyle="width: 3.5rem" bodyClass="text-right">
+              <template #body="{ data }">
+                <Button
+                  icon="pi pi-chevron-right"
+                  severity="secondary"
+                  variant="text"
+                  rounded
+                  size="small"
+                  @click="router.push(`/eventos/${data.evento_id || data.id}`)"
+                />
+              </template>
+            </Column>
+          </DataTable>
+        </template>
+      </Card>
     </div>
 
     <!-- Modal Nuevo Evento -->

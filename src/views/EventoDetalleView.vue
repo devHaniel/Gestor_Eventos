@@ -827,14 +827,14 @@ function confirmarEliminarCobro(cobro) {
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                   <div>
                     <h3 class="text-sm font-bold text-slate-800">Áreas del evento</h3>
-                    <p class="text-xs text-slate-500">Elige cómo se paga cada área y asigna a tu equipo.</p>
+                    <p class="text-xs text-slate-500">Configura la modalidad de pago y asigna colaboradores a cada área.</p>
                   </div>
 
                   <Button
                     label="Agregar área"
                     icon="pi pi-plus"
                     size="small"
-                    class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 !text-xs font-semibold"
+                    class="text-xs font-semibold"
                     @click="abrirActivarArea"
                   />
                 </div>
@@ -846,13 +846,13 @@ function confirmarEliminarCobro(cobro) {
                   </div>
                   <p class="text-sm font-bold text-slate-700">Este evento todavía no tiene áreas</p>
                   <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
-                    Agrega un área como Cocina, Meseros o Barra para empezar a asignar personal.
+                    Agrega un área como Cocina, Meseros o Barra para empezar a asignar colaboradores.
                   </p>
                   <Button
                     label="Agregar primera área"
                     icon="pi pi-plus"
                     size="small"
-                    class="!bg-emerald-600 !border-emerald-600 !text-xs font-semibold"
+                    class="text-xs font-semibold"
                     @click="abrirActivarArea"
                   />
                 </div>
@@ -905,14 +905,14 @@ function confirmarEliminarCobro(cobro) {
 
                 <!-- Buscador de la tabla de pagos -->
                 <div class="flex items-center justify-between gap-3">
-                  <div class="relative w-full sm:w-72">
-                    <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                  <IconField class="w-full sm:w-72">
+                    <InputIcon class="pi pi-search text-slate-400" />
                     <InputText
                       v-model="busquedaPagos"
                       placeholder="Filtrar por persona o área..."
-                      class="w-full !pl-9 !py-1.5 text-xs"
+                      class="w-full text-xs"
                     />
-                  </div>
+                  </IconField>
                   <span class="text-xs text-slate-400">{{ asignacionesFiltradasPagos.length }} asignaciones</span>
                 </div>
 
@@ -1018,7 +1018,7 @@ function confirmarEliminarCobro(cobro) {
                       label="Nuevo Cobro"
                       icon="pi pi-plus"
                       size="small"
-                      class="!bg-emerald-600 !border-emerald-600 !text-xs font-semibold"
+                      class="text-xs font-semibold"
                       @click="dialogNuevoCobro = true"
                     />
                   </div>
@@ -1156,8 +1156,9 @@ function confirmarEliminarCobro(cobro) {
         <p class="text-xs text-slate-500 mb-4">Puedes inicializar las áreas sugeridas (Cocina, Meseros, Barra, etc.) con un clic:</p>
         <Button
           label="Crear áreas básicas"
-          icon="pi pi-sparkles"
-          class="!bg-emerald-600 !border-emerald-600 text-xs"
+          icon="pi pi-th-large"
+          size="small"
+          class="text-xs"
           :loading="guardando"
           @click="inicializarAreasDesdeEvento"
         />
@@ -1232,7 +1233,7 @@ function confirmarEliminarCobro(cobro) {
             type="button"
             label="Cancelar"
             severity="secondary"
-            text
+            variant="text"
             @click="dialogActivarArea = false"
           />
           <Button
@@ -1241,7 +1242,6 @@ function confirmarEliminarCobro(cobro) {
             :disabled="!nuevaAreaConfig.area_id"
             label="Agregar área"
             icon="pi pi-check"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-semibold"
           />
         </div>
       </form>
@@ -1319,11 +1319,13 @@ function confirmarEliminarCobro(cobro) {
           <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
             Fecha de Cobro
           </label>
-          <input
-            type="date"
+          <DatePicker
             v-model="nuevoCobro.fecha"
-            required
-            class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-md shadow-xs focus:ring-2 focus:ring-emerald-500"
+            dateFormat="yy-mm-dd"
+            updateModelType="string"
+            showIcon
+            class="w-full text-sm"
+            placeholder="YYYY-MM-DD"
           />
         </div>
 
@@ -1332,7 +1334,7 @@ function confirmarEliminarCobro(cobro) {
             type="button"
             label="Cancelar"
             severity="secondary"
-            text
+            variant="text"
             @click="dialogNuevoCobro = false"
           />
           <Button
@@ -1341,7 +1343,6 @@ function confirmarEliminarCobro(cobro) {
             :disabled="nuevoCobro.monto <= 0"
             label="Guardar Cobro"
             icon="pi pi-check"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-semibold"
           />
         </div>
       </form>
@@ -1397,11 +1398,13 @@ function confirmarEliminarCobro(cobro) {
           <label class="block text-xs font-semibold uppercase text-slate-700 mb-1">
             Fecha del Gasto
           </label>
-          <input
-            type="date"
+          <DatePicker
             v-model="nuevoGasto.fecha"
-            required
-            class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-md shadow-xs focus:ring-2 focus:ring-emerald-500"
+            dateFormat="yy-mm-dd"
+            updateModelType="string"
+            showIcon
+            class="w-full text-sm"
+            placeholder="YYYY-MM-DD"
           />
         </div>
 
@@ -1410,7 +1413,7 @@ function confirmarEliminarCobro(cobro) {
             type="button"
             label="Cancelar"
             severity="secondary"
-            text
+            variant="text"
             @click="dialogNuevoGasto = false"
           />
           <Button
@@ -1419,7 +1422,6 @@ function confirmarEliminarCobro(cobro) {
             :disabled="nuevoGasto.monto <= 0"
             label="Guardar Gasto"
             icon="pi pi-check"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 font-semibold"
           />
         </div>
       </form>

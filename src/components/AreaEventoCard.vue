@@ -163,342 +163,349 @@ function confirmarQuitarAsignacion(asig) {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden mb-6 transition-shadow hover:shadow-sm">
-    <!-- Header del Área -->
-    <div class="p-5 border-b border-slate-200 bg-slate-50/70">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-slate-900 text-emerald-400 flex items-center justify-center font-bold text-base shadow-xs shrink-0">
-            <i class="pi pi-users"></i>
-          </div>
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <h3 class="text-base font-bold text-slate-800">{{ area.area_nombre }}</h3>
-              <Tag
-                :value="area.tipo_pago === 'por_area' ? 'Por área' : 'Por persona'"
-                :severity="area.tipo_pago === 'por_area' ? 'info' : 'secondary'"
-                class="!text-[11px] !font-semibold"
-              />
-              <span v-if="area.tipo_pago === 'por_area'" class="text-xs text-slate-500 font-medium">
-                ({{ area.metodo_reparto === 'por_horas' ? 'Reparto por horas' : 'Reparto equitativo' }})
-              </span>
+  <Card class="mb-6 !shadow-xs !border !border-slate-200 overflow-hidden">
+    <template #header>
+      <!-- Cabecera del Área con Métricas y Acciones -->
+      <div class="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/70">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0 mt-0.5">
+              <i class="pi pi-users"></i>
             </div>
-            <div class="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
-              <span><strong>{{ asignacionesDelArea.length }}</strong> asignados</span>
-              <span class="text-slate-300">&bull;</span>
-              <span>Total Horas: <strong class="font-mono">{{ totalHorasRegistradas }}h</strong></span>
-              <span class="text-slate-300">&bull;</span>
-              <span>Costo: <strong class="font-mono text-slate-800">{{ formatearMoneda(area.costo_area) }}</strong></span>
-              <span class="text-slate-300">&bull;</span>
-              <span>Pagado: <strong class="font-mono text-emerald-600">{{ formatearMoneda(area.pagado_area) }}</strong></span>
-              <span class="text-slate-300">&bull;</span>
-              <span>
-                Pendiente:
-                <strong
-                  class="font-mono"
-                  :class="pendienteArea > 0 ? 'text-amber-600 font-bold' : 'text-slate-400'"
-                >
-                  {{ formatearMoneda(pendienteArea) }}
-                </strong>
-              </span>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-base font-bold text-slate-900">{{ area.area_nombre }}</h3>
+                <Tag
+                  :value="area.tipo_pago === 'por_area' ? 'Bolsa por área' : 'Tarifa por persona'"
+                  :severity="area.tipo_pago === 'por_area' ? 'info' : 'secondary'"
+                  class="!text-xs font-semibold"
+                />
+                <span v-if="area.tipo_pago === 'por_area'" class="text-xs text-slate-500 font-medium">
+                  ({{ area.metodo_reparto === 'por_horas' ? 'Reparto por horas' : 'Reparto equitativo' }})
+                </span>
+              </div>
+              <div class="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
+                <span><strong>{{ asignacionesDelArea.length }}</strong> asignados</span>
+                <span class="text-slate-300">&bull;</span>
+                <span>Total Horas: <strong class="font-mono text-slate-700">{{ totalHorasRegistradas }}h</strong></span>
+                <span class="text-slate-300">&bull;</span>
+                <span>Costo: <strong class="font-mono text-slate-800">{{ formatearMoneda(area.costo_area) }}</strong></span>
+                <span class="text-slate-300">&bull;</span>
+                <span>Pagado: <strong class="font-mono text-emerald-600">{{ formatearMoneda(area.pagado_area) }}</strong></span>
+                <span class="text-slate-300">&bull;</span>
+                <span>
+                  Pendiente:
+                  <strong
+                    class="font-mono"
+                    :class="pendienteArea > 0 ? 'text-amber-600 font-bold' : 'text-slate-400'"
+                  >
+                    {{ formatearMoneda(pendienteArea) }}
+                  </strong>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Acciones principales de la tarjeta de área -->
-        <div class="flex flex-wrap items-center gap-2">
-          <Button
-            v-if="pendienteArea > 0"
-            label="Liquidar Pendiente del Área"
-            icon="pi pi-check-circle"
-            severity="success"
-            size="small"
-            class="!text-xs font-semibold"
-            @click="$emit('pagar-area', area)"
-          />
-          <Button
-            label="Asignar Personal"
-            icon="pi pi-user-plus"
-            size="small"
-            class="!bg-emerald-600 hover:!bg-emerald-700 !border-emerald-600 !text-xs font-semibold"
-            @click="$emit('abrir-asignar', area)"
-          />
-          <Button
-            icon="pi pi-trash"
-            severity="danger"
-            text
-            rounded
-            size="small"
-            title="Quitar área del evento"
-            @click="confirmarQuitarArea"
-          />
-        </div>
-      </div>
-
-      <!-- Configuración de Modalidad de Pago del Área -->
-      <div class="mt-4 pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Tipo de Pago -->
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">
-            Forma de pago
-          </label>
-          <Select
-            :modelValue="area.tipo_pago"
-            :options="[
-              { label: 'Por persona', value: 'individual' },
-              { label: 'Monto por área', value: 'por_area' },
-            ]"
-            optionLabel="label"
-            optionValue="value"
-            @update:modelValue="cambiarTipoPago"
-            class="w-full text-xs"
-          />
-        </div>
-
-        <!-- Método de Reparto (Solo si es por_area) -->
-        <div v-if="area.tipo_pago === 'por_area'">
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">
-            Repartir
-          </label>
-          <Select
-            :modelValue="area.metodo_reparto"
-            :options="[
-              { label: 'En partes iguales', value: 'equitativo' },
-              { label: 'Según las horas', value: 'por_horas' },
-            ]"
-            optionLabel="label"
-            optionValue="value"
-            @update:modelValue="cambiarMetodoReparto"
-            class="w-full text-xs"
-          />
-        </div>
-
-        <!-- Monto del Área (Solo si es por_area) -->
-        <div v-if="area.tipo_pago === 'por_area'">
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">
-            Monto del área (HNL)
-          </label>
-          <div class="flex items-center gap-1.5">
-            <InputNumber
-              v-model="montoAreaLocal"
-              :minFractionDigits="2"
-              :maxFractionDigits="2"
-              :min="0"
-              mode="decimal"
-              placeholder="0.00"
-              class="w-full text-xs font-mono"
-              @blur="aplicarMontoArea"
-              @keydown.enter="aplicarMontoArea"
+          <!-- Acciones principales de área -->
+          <div class="flex flex-wrap items-center gap-2">
+            <Button
+              v-if="pendienteArea > 0"
+              label="Liquidar Pendiente"
+              icon="pi pi-check-circle"
+              severity="success"
+              size="small"
+              class="text-xs font-semibold"
+              @click="$emit('pagar-area', area)"
             />
             <Button
-              icon="pi pi-check"
+              label="Asignar Personal"
+              icon="pi pi-user-plus"
               size="small"
-              severity="secondary"
-              title="Guardar monto de bolsa"
-              @click="aplicarMontoArea"
+              class="text-xs font-semibold"
+              @click="$emit('abrir-asignar', area)"
+            />
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              variant="text"
+              rounded
+              size="small"
+              title="Quitar área del evento"
+              @click="confirmarQuitarArea"
             />
           </div>
         </div>
-      </div>
 
-      <!-- Advertencia si reparto es por horas pero nadie tiene horas -->
-      <div
-        v-if="advertenciaHoras"
-        class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2.5 text-xs text-amber-900 shadow-2xs"
-      >
-        <i class="pi pi-exclamation-triangle text-amber-600 text-sm mt-0.5"></i>
-        <div>
-          <span class="font-bold">Faltan las horas:</span>
-          nadie tiene horas cargadas en esta área, así que el monto se reparte en partes iguales hasta que las registres.
-        </div>
-      </div>
-    </div>
+        <!-- Parámetros de Modalidad de Pago -->
+        <div class="mt-4 pt-4 border-t border-slate-200/80 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              Forma de pago del área
+            </label>
+            <Select
+              :modelValue="area.tipo_pago"
+              :options="[
+                { label: 'Por persona (tarifa / horas)', value: 'individual' },
+                { label: 'Monto por área (bolsa cerrada)', value: 'por_area' },
+              ]"
+              optionLabel="label"
+              optionValue="value"
+              @update:modelValue="cambiarTipoPago"
+              class="w-full text-xs"
+            />
+          </div>
 
-    <!-- Tabla del Personal Asignado -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-left text-xs text-slate-700">
-        <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
-          <tr>
-            <th class="py-2.5 px-4">Personal</th>
-            <th class="py-2.5 px-4">Rol en Evento</th>
-            <th class="py-2.5 px-4">Horas</th>
-            <th v-if="area.tipo_pago === 'individual'" class="py-2.5 px-4">Modalidad Asignada</th>
-            <th class="py-2.5 px-4 bg-slate-100/60">A Pagar (Calc)</th>
-            <th class="py-2.5 px-4">Pagado</th>
-            <th class="py-2.5 px-4">Pendiente</th>
-            <th class="py-2.5 px-4">Estado</th>
-            <th class="py-2.5 px-4 text-right">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          <tr
-            v-for="asig in asignacionesDelArea"
-            :key="asig.asignacion_id"
-            class="hover:bg-slate-50/60 transition-colors"
-          >
-            <!-- Personal -->
-            <td class="py-3 px-4">
-              <div class="font-bold text-slate-800">{{ asig.personal }}</div>
-              <div v-if="asig.notas" class="text-[10px] text-slate-400 italic">{{ asig.notas }}</div>
-            </td>
+          <div v-if="area.tipo_pago === 'por_area'">
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              Criterio de reparto
+            </label>
+            <Select
+              :modelValue="area.metodo_reparto"
+              :options="[
+                { label: 'En partes iguales (equitativo)', value: 'equitativo' },
+                { label: 'Proporcional a las horas', value: 'por_horas' },
+              ]"
+              optionLabel="label"
+              optionValue="value"
+              @update:modelValue="cambiarMetodoReparto"
+              class="w-full text-xs"
+            />
+          </div>
 
-            <!-- Rol -->
-            <td class="py-3 px-4">
-              <template v-if="asignacionEnEdicion === asig.asignacion_id">
-                <InputText
-                  v-model="datosEdicion.rol_en_evento"
-                  class="w-32 !py-1 text-xs"
-                  placeholder="Rol..."
-                />
-              </template>
-              <template v-else>
-                <span class="text-slate-600">{{ asig.rol_en_evento || 'Sin rol' }}</span>
-              </template>
-            </td>
-
-            <!-- Horas -->
-            <td class="py-3 px-4">
-              <template v-if="asignacionEnEdicion === asig.asignacion_id">
-                <InputNumber
-                  v-model="datosEdicion.horas"
-                  :min="0"
-                  :maxFractionDigits="1"
-                  class="w-20 !py-1 text-xs font-mono"
-                />
-              </template>
-              <template v-else>
-                <span class="font-mono font-medium">{{ asig.horas ?? 0 }}h</span>
-              </template>
-            </td>
-
-            <!-- Modalidad Asignada (Solo si es individual) -->
-            <td v-if="area.tipo_pago === 'individual'" class="py-3 px-4">
-              <template v-if="asignacionEnEdicion === asig.asignacion_id">
-                <div class="space-y-1.5">
-                  <div class="flex items-center gap-1">
-                    <span class="text-[10px] text-slate-400 w-12">Fijo:</span>
-                    <InputNumber
-                      v-model="datosEdicion.pago_individual"
-                      :min="0"
-                      placeholder="Monto fijo..."
-                      class="w-24 !py-1 text-xs font-mono"
-                    />
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span class="text-[10px] text-slate-400 w-12">Tarifa/h:</span>
-                    <InputNumber
-                      v-model="datosEdicion.tarifa_hora"
-                      :min="0"
-                      placeholder="Tarifa..."
-                      class="w-24 !py-1 text-xs font-mono"
-                    />
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <div v-if="asig.pago_individual" class="font-mono font-semibold text-slate-700">
-                  {{ formatearMoneda(asig.pago_individual) }}
-                  <span class="text-[10px] text-slate-400 font-normal block">(Monto Fijo)</span>
-                </div>
-                <div v-else class="text-slate-600 font-mono text-[11px]">
-                  {{ formatearMoneda(asig.tarifa_hora) }}/h
-                  <span class="text-[10px] text-slate-400 block">({{ asig.horas ?? 0 }}h × tarifa)</span>
-                </div>
-              </template>
-            </td>
-
-            <!-- A Pagar (Calculado solo lectura) -->
-            <td class="py-3 px-4 font-mono font-bold text-slate-900 bg-slate-100/40">
-              {{ formatearMoneda(asig.monto_a_pagar) }}
-            </td>
-
-            <!-- Pagado -->
-            <td class="py-3 px-4 font-mono font-medium text-emerald-600">
-              {{ formatearMoneda(asig.monto_pagado) }}
-            </td>
-
-            <!-- Pendiente -->
-            <td class="py-3 px-4 font-mono font-semibold" :class="Number(asig.monto_pendiente) > 0 ? 'text-amber-600' : 'text-slate-400'">
-              {{ formatearMoneda(asig.monto_pendiente) }}
-            </td>
-
-            <!-- Tag Estado Pago -->
-            <td class="py-3 px-4">
-              <Tag
-                :value="etiquetaEstadoPago(asig.estado_pago)"
-                :severity="severidadEstadoPago(asig.estado_pago)"
-                class="!text-[10px] uppercase font-bold"
+          <div v-if="area.tipo_pago === 'por_area'">
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              Bolsa total del área (HNL)
+            </label>
+            <div class="flex items-center gap-1.5">
+              <InputNumber
+                v-model="montoAreaLocal"
+                :minFractionDigits="2"
+                :maxFractionDigits="2"
+                :min="0"
+                mode="decimal"
+                placeholder="0.00"
+                class="w-full text-xs font-mono"
+                @blur="aplicarMontoArea"
+                @keydown.enter="aplicarMontoArea"
               />
-            </td>
+              <Button
+                icon="pi pi-check"
+                size="small"
+                severity="secondary"
+                variant="outlined"
+                title="Guardar bolsa"
+                @click="aplicarMontoArea"
+              />
+            </div>
+          </div>
+        </div>
 
-            <!-- Acciones -->
-            <td class="py-3 px-4 text-right">
-              <template v-if="asignacionEnEdicion === asig.asignacion_id">
-                <div class="flex items-center justify-end gap-1">
-                  <Button
-                    icon="pi pi-check"
-                    severity="success"
-                    size="small"
-                    rounded
-                    title="Guardar cambios"
-                    @click="guardarEdicion(asig.asignacion_id)"
-                  />
-                  <Button
-                    icon="pi pi-times"
-                    severity="secondary"
-                    size="small"
-                    rounded
-                    text
-                    title="Cancelar"
-                    @click="cancelarEdicion"
-                  />
-                </div>
-              </template>
-              <template v-else>
-                <div class="flex items-center justify-end gap-1">
-                  <Button
-                    icon="pi pi-pencil"
-                    severity="secondary"
-                    size="small"
-                    text
-                    rounded
-                    title="Modificar horas, rol o tarifa"
-                    @click="iniciarEdicion(asig)"
-                  />
-                  <Button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    size="small"
-                    text
-                    rounded
-                    title="Remover de esta área"
-                    @click="confirmarQuitarAsignacion(asig)"
-                  />
-                </div>
-              </template>
-            </td>
-          </tr>
+        <!-- Alerta de horas con PrimeVue Message -->
+        <Message
+          v-if="advertenciaHoras"
+          severity="warn"
+          icon="pi pi-exclamation-triangle"
+          class="mt-3 text-xs"
+        >
+          <strong>Horas no registradas:</strong> Ningún colaborador tiene horas cargadas en esta área, por lo que el monto se reparte equitativamente hasta que registres sus horas.
+        </Message>
+      </div>
+    </template>
 
-          <tr v-if="asignacionesDelArea.length === 0">
-            <td :colspan="area.tipo_pago === 'individual' ? 9 : 8" class="py-8 text-center text-slate-400">
-              <div class="flex flex-col items-center justify-center gap-1.5">
-                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-lg mb-1">
-                  <i class="pi pi-user-plus"></i>
+    <template #content>
+      <!-- Tabla PrimeVue de Personal Asignado -->
+      <DataTable
+        :value="asignacionesDelArea"
+        class="p-datatable-sm"
+        tableStyle="min-width: 50rem"
+        emptyMessage="No hay personal asignado a esta área todavía."
+      >
+        <template #empty>
+          <div class="py-8 text-center text-slate-400">
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-lg mx-auto mb-2">
+              <i class="pi pi-user-plus"></i>
+            </div>
+            <p class="font-medium text-slate-700 text-sm">No hay colaboradores asignados a esta área</p>
+            <p class="text-xs text-slate-400 mt-0.5 mb-3">Asigna personal del equipo para calcular sus pagos automáticamente.</p>
+            <Button
+              label="Asignar colaboradores"
+              icon="pi pi-plus"
+              size="small"
+              class="text-xs"
+              @click="$emit('abrir-asignar', area)"
+            />
+          </div>
+        </template>
+
+        <!-- Colaborador -->
+        <Column field="personal" header="Colaborador">
+          <template #body="{ data }">
+            <div class="font-semibold text-slate-800 text-xs">{{ data.personal }}</div>
+            <div v-if="data.notas" class="text-[10px] text-slate-400 italic">{{ data.notas }}</div>
+          </template>
+        </Column>
+
+        <!-- Rol en Evento -->
+        <Column field="rol_en_evento" header="Rol en Evento">
+          <template #body="{ data }">
+            <template v-if="asignacionEnEdicion === data.asignacion_id">
+              <InputText
+                v-model="datosEdicion.rol_en_evento"
+                class="w-32 !py-1 text-xs"
+                placeholder="Rol..."
+              />
+            </template>
+            <template v-else>
+              <span class="text-slate-600 text-xs">{{ data.rol_en_evento || 'Sin rol' }}</span>
+            </template>
+          </template>
+        </Column>
+
+        <!-- Horas -->
+        <Column field="horas" header="Horas">
+          <template #body="{ data }">
+            <template v-if="asignacionEnEdicion === data.asignacion_id">
+              <InputNumber
+                v-model="datosEdicion.horas"
+                :min="0"
+                :maxFractionDigits="1"
+                class="w-20 !py-1 text-xs font-mono"
+              />
+            </template>
+            <template v-else>
+              <span class="font-mono text-xs font-medium text-slate-800">{{ data.horas ?? 0 }}h</span>
+            </template>
+          </template>
+        </Column>
+
+        <!-- Modalidad Asignada (Solo si es individual) -->
+        <Column v-if="area.tipo_pago === 'individual'" header="Modalidad Base">
+          <template #body="{ data }">
+            <template v-if="asignacionEnEdicion === data.asignacion_id">
+              <div class="space-y-1">
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] text-slate-400 w-12">Fijo:</span>
+                  <InputNumber
+                    v-model="datosEdicion.pago_individual"
+                    :min="0"
+                    placeholder="Fijo..."
+                    class="w-24 !py-0.5 text-xs font-mono"
+                  />
                 </div>
-                <p class="font-medium text-slate-600">No hay personal asignado a esta área todavía</p>
-                <p class="text-xs text-slate-400">Asigna meseros, cocineros o coordinadores para calcular los pagos.</p>
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] text-slate-400 w-12">Tarifa/h:</span>
+                  <InputNumber
+                    v-model="datosEdicion.tarifa_hora"
+                    :min="0"
+                    placeholder="Tarifa..."
+                    class="w-24 !py-0.5 text-xs font-mono"
+                  />
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div v-if="data.pago_individual" class="font-mono font-semibold text-slate-700 text-xs">
+                {{ formatearMoneda(data.pago_individual) }}
+                <span class="text-[10px] text-slate-400 font-normal block">(Monto Fijo)</span>
+              </div>
+              <div v-else class="text-slate-600 font-mono text-xs">
+                {{ formatearMoneda(data.tarifa_hora) }}/h
+                <span class="text-[10px] text-slate-400 block">({{ data.horas ?? 0 }}h × tarifa)</span>
+              </div>
+            </template>
+          </template>
+        </Column>
+
+        <!-- A Pagar Calculado -->
+        <Column field="monto_a_pagar" header="A Pagar">
+          <template #body="{ data }">
+            <span class="font-mono text-xs font-bold text-slate-900">
+              {{ formatearMoneda(data.monto_a_pagar) }}
+            </span>
+          </template>
+        </Column>
+
+        <!-- Pagado -->
+        <Column field="monto_pagado" header="Pagado">
+          <template #body="{ data }">
+            <span class="font-mono text-xs font-semibold text-emerald-600">
+              {{ formatearMoneda(data.monto_pagado) }}
+            </span>
+          </template>
+        </Column>
+
+        <!-- Pendiente -->
+        <Column field="monto_pendiente" header="Pendiente">
+          <template #body="{ data }">
+            <span
+              class="font-mono text-xs font-bold"
+              :class="Number(data.monto_pendiente) > 0 ? 'text-amber-600' : 'text-slate-400'"
+            >
+              {{ formatearMoneda(data.monto_pendiente) }}
+            </span>
+          </template>
+        </Column>
+
+        <!-- Estado Pago -->
+        <Column field="estado_pago" header="Estado">
+          <template #body="{ data }">
+            <Tag
+              :value="etiquetaEstadoPago(data.estado_pago)"
+              :severity="severidadEstadoPago(data.estado_pago)"
+              class="!text-[10px] uppercase font-bold"
+            />
+          </template>
+        </Column>
+
+        <!-- Acciones -->
+        <Column header="Acciones" headerStyle="width: 5rem" bodyClass="text-right">
+          <template #body="{ data }">
+            <template v-if="asignacionEnEdicion === data.asignacion_id">
+              <div class="flex items-center justify-end gap-1">
                 <Button
-                  label="Asignar primer miembro"
-                  icon="pi pi-plus"
+                  icon="pi pi-check"
+                  severity="success"
                   size="small"
-                  class="mt-2 !bg-emerald-600 !border-emerald-600 !text-xs"
-                  @click="$emit('abrir-asignar', area)"
+                  rounded
+                  title="Guardar cambios"
+                  @click="guardarEdicion(data.asignacion_id)"
+                />
+                <Button
+                  icon="pi pi-times"
+                  severity="secondary"
+                  size="small"
+                  rounded
+                  variant="text"
+                  title="Cancelar"
+                  @click="cancelarEdicion"
                 />
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            </template>
+            <template v-else>
+              <div class="flex items-center justify-end gap-1">
+                <Button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  size="small"
+                  variant="text"
+                  rounded
+                  title="Modificar horas, rol o tarifa"
+                  @click="iniciarEdicion(data)"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  variant="text"
+                  rounded
+                  title="Remover de esta área"
+                  @click="confirmarQuitarAsignacion(data)"
+                />
+              </div>
+            </template>
+          </template>
+        </Column>
+      </DataTable>
+    </template>
+  </Card>
 </template>
