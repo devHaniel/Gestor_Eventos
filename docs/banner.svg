@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="Gestor de Eventos">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#2dd4bf" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.045" />
+    </pattern>
+    <clipPath id="calendar-clip">
+      <rect x="0" y="42" width="220" height="132" rx="14" />
+    </clipPath>
+    <style>
+      .title { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 60px; font-weight: 700; fill: #f8fafc; letter-spacing: -1.5px; }
+      .subtitle { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 400; fill: #cbd5e1; }
+      .muted { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 400; fill: #94a3b8; }
+      .pill { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; fill: #6ee7b7; }
+      .chip { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 12.5px; font-weight: 600; fill: #d1fae5; }
+      .cal-head { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #052e2b; letter-spacing: 1.2px; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)" />
+  <rect width="1280" height="320" fill="url(#grid)" />
+  <circle cx="1110" cy="30" r="190" fill="#10b981" opacity="0.12" />
+  <circle cx="1210" cy="310" r="150" fill="#14b8a6" opacity="0.1" />
+
+  <rect x="80" y="58" width="228" height="32" rx="16" fill="#10b981" fill-opacity="0.12" stroke="#34d399" stroke-opacity="0.4" />
+  <circle cx="99" cy="74" r="4" fill="#34d399" />
+  <text x="112" y="79" class="pill">GESTIÓN DE EVENTOS</text>
+
+  <text x="80" y="159" class="title">Gestor de Eventos</text>
+  <text x="80" y="197" class="subtitle">Operación, personal y finanzas para catering</text>
+  <text x="80" y="225" class="muted">Del presupuesto a la liquidación del equipo, en una sola plataforma.</text>
+
+  <g transform="translate(80 252)">
+    <rect x="0" y="0" width="86" height="30" rx="8" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.1" />
+    <text x="43" y="20" text-anchor="middle" class="chip">Vue 3</text>
+    <rect x="96" y="0" width="108" height="30" rx="8" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.1" />
+    <text x="150" y="20" text-anchor="middle" class="chip">Supabase</text>
+    <rect x="214" y="0" width="150" height="30" rx="8" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.1" />
+    <text x="289" y="20" text-anchor="middle" class="chip">PrimeVue + Tailwind</text>
+  </g>
+
+  <g transform="translate(950 78)">
+    <rect x="0" y="0" width="220" height="164" rx="20" fill="#020617" fill-opacity="0.5" stroke="#ffffff" stroke-opacity="0.1" />
+    <rect x="14" y="18" width="192" height="132" rx="14" fill="#0f172a" stroke="#1e293b" />
+    <g clip-path="url(#calendar-clip)">
+      <rect x="14" y="42" width="192" height="36" fill="url(#accent)" />
+    </g>
+    <text x="34" y="65" class="cal-head">OCTUBRE 2026</text>
+    <circle cx="40" cy="102" r="4.5" fill="#334155" />
+    <circle cx="76" cy="102" r="4.5" fill="#334155" />
+    <circle cx="112" cy="102" r="4.5" fill="#34d399" />
+    <circle cx="148" cy="102" r="4.5" fill="#334155" />
+    <circle cx="184" cy="102" r="4.5" fill="#334155" />
+    <circle cx="40" cy="128" r="4.5" fill="#334155" />
+    <circle cx="76" cy="128" r="4.5" fill="#2dd4bf" />
+    <circle cx="112" cy="128" r="4.5" fill="#334155" />
+    <circle cx="148" cy="128" r="4.5" fill="#334155" />
+    <circle cx="184" cy="128" r="4.5" fill="#334155" />
+    <rect x="24" y="144" width="132" height="4" rx="2" fill="#1e293b" />
+    <rect x="24" y="154" width="86" height="4" rx="2" fill="#1e293b" />
+  </g>
+</svg>
