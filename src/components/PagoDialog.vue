@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
 import { formatearMoneda, formatearFecha } from '../utils/formato.js'
 import { METODOS_PAGO } from '../utils/estados.js'
 import { usePagos } from '../composables/usePagos.js'
@@ -23,6 +24,7 @@ const props = defineProps({
 const emit = defineEmits(['update:visible', 'pago-registrado', 'pago-eliminado'])
 
 const confirm = useConfirm()
+const toast = useToast()
 const { listaPagos, listarPagos, eliminarPago } = usePagos()
 
 const monto = ref(0)
@@ -55,6 +57,12 @@ watch(
         await listarPagos(asig.asignacion_id)
       } catch (e) {
         console.error('Error al listar pagos:', e)
+        toast.add({
+          severity: 'error',
+          summary: 'No se pudo cargar el historial',
+          detail: e.message || 'Intenta de nuevo.',
+          life: 4000,
+        })
       } finally {
         cargandoHistorial.value = false
       }
@@ -119,6 +127,12 @@ function confirmarEliminarPago(pago) {
         emit('pago-eliminado')
       } catch (err) {
         console.error(err)
+        toast.add({
+          severity: 'error',
+          summary: 'No se pudo eliminar el pago',
+          detail: err.message || 'Intenta de nuevo.',
+          life: 4000,
+        })
       }
     },
   })
