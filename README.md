@@ -198,6 +198,7 @@ El repositorio incluye `vercel.json` con esa reescritura configurada. Para Netli
 ## Documentación
 
 - [Modelo de datos y reglas de negocio](docs/base-de-datos.md)
+- [Historial de cambios](CHANGELOG.md)
 
 ## Autor
 
